@@ -1,89 +1,98 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const daysInWeek = 7;
-    const eventModal = document.getElementById('eventModal');
-    const closeBtn = document.querySelector('.close');
-    const addEventBtn = document.getElementById('addEventBtn');
-    const eventDayText = document.getElementById('eventDay');
-    const eventTitleInput = document.getElementById('eventTitle');
-    const eventTypeInput = document.getElementById('eventType');
-    const calendarBody = document.getElementById('calendarBody');
-    let currentDate = new Date();
+    const currentDate = new Date();
     let selectedDate;
     let events = {};
-
-    // Close Modal function
-    const closeModal = () => {
-        eventModal.style.display = 'none';
-        eventTitleInput.value = '';
+    let categories = {
+        work: '#ff6666',
+        personal: '#66cc66',
+        other: '#6666ff'
     };
+    
+    const calendarBody = document.getElementById('calendarBody');
+    const monthYearLabel = document.getElementById('monthYear');
+    const eventModal = document.getElementById('eventModal');
+    const categoryModal = document.getElementById('categoryModal');
+    const closeEventBtn = document.querySelector('.close');
+    const closeCategoryBtn = document.querySelector('.closeCategory');
+    const addEventBtn = document.getElementById('addEventBtn');
+    const addCategoryBtn = document.getElementById('addCategoryBtn');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+    const createCategoryBtn = document.getElementById('createCategoryBtn');
 
-    closeBtn.onclick = closeModal;
+    let displayedDate = new Date();
 
-    // Add Event Functionality
-    const addEvent = () => {
-        const eventTitle = eventTitleInput.value;
-        const eventType = eventTypeInput.value;
-        if (eventTitle && selectedDate) {
-            const eventElement = document.createElement('div');
-            eventElement.className = `event ${eventType}`;
-            eventElement.innerText = eventTitle;
+    // Close modals
+    closeEventBtn.onclick = () => { eventModal.style.display = 'none'; };
+    closeCategoryBtn.onclick = () => { categoryModal.style.display = 'none'; };
 
-            const dayCell = document.querySelector(`[data-date="${selectedDate}"]`);
-            dayCell.appendChild(eventElement);
-
-            // Store events for future reference
-            if (!events[selectedDate]) events[selectedDate] = [];
-            events[selectedDate].push({ title: eventTitle, type: eventType });
-
-            closeModal();
+    // Display current date marker
+    const displayCurrentDayMarker = (dayElement) => {
+        const today = new Date();
+        if (displayedDate.getMonth() === today.getMonth() && displayedDate.getFullYear() === today.getFullYear() && dayElement.dataset.day == today.getDate()) {
+            dayElement.classList.add('today');
         }
     };
 
-    addEventBtn.onclick = addEvent;
-
-    // Populate calendar for the selected month
+    // Populate calendar based on month and year
     const populateCalendar = (date) => {
         calendarBody.innerHTML = '';
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const today = new Date();
+        monthYearLabel.innerText = date.toLocaleDateString('en-us', { month: 'long', year: 'numeric' });
+        const firstDay = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+        const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        let day = 1;
 
-        document.getElementById('monthYear').innerText = date.toLocaleDateString('en-us', { month: 'long', year: 'numeric' });
+        for (let row = 0; row < 6; row++) {
+            const tr = document.createElement('tr');
+            for (let col = 0; col < 7; col++) {
+                const td = document.createElement('td');
+                if (row === 0 && col < firstDay || day > daysInMonth) {
+                    td.classList.add('empty');
+                } else {
+                    td.classList.add('day');
+                    td.innerText = day;
+                    td.dataset.day = day;
 
-        let dayCellIndex = 0;
-        let currentRow = document.createElement('tr');
+                    displayCurrentDayMarker(td);
 
-        // Add empty cells until the first day of the month
-        for (let i = 0; i < firstDayOfMonth; i++) {
-            const emptyCell = document.createElement('td');
-            currentRow.appendChild(emptyCell);
-            dayCellIndex++;
-        }
+                    td.onclick = () => {
+                        selectedDate = new Date(date.getFullYear(), date.getMonth(), day).toISOString().split('T')[0];
+                        document.getElementById('eventDay').innerText = selectedDate;
+                        eventModal.style.display = 'block';
+                    };
 
-        // Populate the days of the month
-        for (let day = 1; day <= daysInMonth; day++) {
-            const dayCell = document.createElement('td');
-            const dayDate = new Date(year, month, day);
-            dayCell.innerText = day;
-            dayCell.setAttribute('data-date', dayDate.toISOString().split('T')[0]);
-
-            // Highlight the current day
-            if (dayDate.toDateString() === today.toDateString()) {
-                dayCell.classList.add('today');
+                    day++;
+                }
+                tr.appendChild(td);
             }
+            calendarBody.appendChild(tr);
+        }
+    };
 
-            // Add click event to open the modal
-            dayCell.onclick = () => {
-                selectedDate = dayDate.toISOString().split('T')[0];
-                eventDayText.innerText = dayDate.toDateString();
-                eventModal.style.display = 'block';
-            };
+    populateCalendar(displayedDate);
 
-            // Load events for the day
-            if (events[selectedDate]) {
-                events[selectedDate].forEach(event => {
-                    const eventElement = document.createElement('div');
-                    eventElement.className = `event ${event.type}`;
-                    eventElement
+    prevMonthBtn.onclick = () => {
+        displayedDate.setMonth(displayedDate.getMonth() - 1);
+        populateCalendar(displayedDate);
+    };
+
+    nextMonthBtn.onclick = () => {
+        displayedDate.setMonth(displayedDate.getMonth() + 1);
+        populateCalendar(displayedDate);
+    };
+
+    // Add new category
+    createCategoryBtn.onclick = () => { categoryModal.style.display = 'block'; };
+    
+    addCategoryBtn.onclick = () => {
+        const categoryName = document.getElementById('newCategoryName').value;
+        const categoryColor = document.getElementById('newCategoryColor').value;
+        if (categoryName) {
+            categories[categoryName] = categoryColor;
+            const eventTypeSelect = document.getElementById('eventType');
+            const newOption = document.createElement('option');
+            newOption.value = categoryName;
+            newOption.innerText = categoryName;
+            newOption.style.color = categoryColor;
+            eventTypeSelect.appendChild(newOption);
+           
