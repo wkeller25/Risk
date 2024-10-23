@@ -1,74 +1,110 @@
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
     background-color: #f5f5f5;
+    margin: 0;
 }
 
 .calendar-header {
     display: flex;
     justify-content: space-between;
-    width: 80%;
-    margin-bottom: 10px;
+    align-items: center;
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px 0;
 }
 
 h1 {
     font-size: 24px;
+    font-weight: normal;
 }
 
 button {
     padding: 8px 15px;
-    background-color: #4a90e2;
+    background-color: #4285F4;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: #357ab9;
+    background-color: #357AE8;
 }
 
 table {
     border-collapse: collapse;
-    width: 80%;
+    width: 100%;
+    max-width: 1000px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
 }
 
 thead th {
-    background-color: #4a90e2;
-    color: white;
-    padding: 15px;
+    background-color: #f5f5f5;
+    padding: 12px 0;
+    text-align: center;
+    font-weight: bold;
+    color: #5f6368;
+    border-bottom: 1px solid #ddd;
 }
 
 td {
+    padding: 15px;
+    height: 100px;
     border: 1px solid #ddd;
-    padding: 20px;
-    text-align: center;
     vertical-align: top;
+    text-align: right;
     position: relative;
-}
-
-.day {
     cursor: pointer;
 }
 
+td.day {
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+td.day:hover {
+    background-color: #f1f3f4;
+}
+
 .today {
-    background-color: yellow;
+    background-color: #4285F4;
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .event {
-    margin-top: 5px;
-    padding: 3px;
+    display: block;
+    padding: 4px;
+    background-color: #4285F4;
     border-radius: 4px;
-    font-size: 0.9em;
+    font-size: 12px;
     color: white;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
 }
 
-.modal {
+#eventModal,
+#categoryModal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 100;
     left: 0;
     top: 0;
     width: 100%;
@@ -77,22 +113,24 @@ td {
 }
 
 .modal-content {
-    background-color: white;
-    margin: 15% auto;
+    background-color: #fff;
+    margin: 10% auto;
     padding: 20px;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 10px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
 }
 
-.close, .closeCategory {
-    color: #aaa;
+.close,
+.closeCategory {
     float: right;
     font-size: 28px;
     font-weight: bold;
+    color: #aaa;
 }
 
-.close:hover, .closeCategory:hover {
+.close:hover,
+.closeCategory:hover {
     color: black;
     cursor: pointer;
 }
