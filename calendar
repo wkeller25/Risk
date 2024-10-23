@@ -1,0 +1,27 @@
+// JavaScript for handling modal, event addition, and color coding
+document.addEventListener('DOMContentLoaded', () => {
+    const days = document.querySelectorAll('.day');
+    const modal = document.getElementById('eventModal');
+    const closeBtn = document.querySelector('.close');
+    const eventDay = document.getElementById('eventDay');
+    const eventTitleInput = document.getElementById('eventTitle');
+    const eventTypeInput = document.getElementById('eventType');
+    const addEventBtn = document.getElementById('addEventBtn');
+    let selectedDay;
+
+    // Function to open the modal
+    function openModal(day) {
+        selectedDay = day;
+        eventDay.innerText = `October ${day.dataset.day}, 2024`;
+        modal.style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+        modal.style.display = 'none';
+        eventTitleInput.value = '';
+        eventTypeInput.value = 'work';
+    }
+
+    // Function to add the event to the selected day
+    function addEvent
