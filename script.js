@@ -1,85 +1,94 @@
-const monthYearElement = document.getElementById("monthYear");
-const calendarElement = document.getElementById("calendar");
-const prevMonthButton = document.getElementById("prevMonth");
-const nextMonthButton = document.getElementById("nextMonth");
-const eventTitleInput = document.getElementById("eventTitle");
-const eventColorInput = document.getElementById("eventColor");
-const addEventButton = document.getElementById("addEvent");
+const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
 
-let currentDate = new Date();
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let currentDay = new Date().getDate();
 
+const monthYear = document.getElementById("monthYear");
+const calendarBody = document.getElementById("calendarBody");
+const eventModal = document.getElementById("eventModal");
+const eventDay = document.getElementById("eventDay");
+const addEventBtn = document.getElementById("addEventBtn");
+const createCategoryBtn = document.getElementById("createCategoryBtn");
+const categoryModal = document.getElementById("categoryModal");
+const closeCategory = document.querySelector(".closeCategory");
+const currentDayMarker = document.getElementById("currentDayMarker");
+
+// Categories array to hold event categories
+let categories = [{name: "Work", color: "#ff6666"}, {name: "Personal", color: "#66cc66"}];
+
+// Function to render the calendar
 function renderCalendar() {
-    // Clear previous calendar
-    calendarElement.innerHTML = "";
-    
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
+    monthYear.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+    calendarBody.innerHTML = ""; // Clear the calendar body
 
-    // Set the month and year display
-    monthYearElement.textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+    // Get the first day of the month and the number of days in the month
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
 
-    // Get the first day of the month and number of days in the month
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
-    // Calculate empty days
-    const emptyDays = firstDay.getDay();
-
-    // Create empty boxes for days before the first day of the month
-    for (let i = 0; i < emptyDays; i++) {
-        const emptyDiv = document.createElement("div");
-        calendarElement.appendChild(emptyDiv);
+    // Fill in the empty cells before the first day
+    const emptyCells = firstDay.getDay();
+    for (let i = 0; i < emptyCells; i++) {
+        calendarBody.innerHTML += "<td class='empty'></td>";
     }
 
-    // Create calendar days
-    for (let day = 1; day <= lastDay.getDate(); day++) {
-        const dayDiv = document.createElement("div");
-        dayDiv.textContent = day;
-        dayDiv.dataset.date = `${year}-${month + 1}-${day}`;
+    // Create the day cells
+    for (let day = 1; day <= daysInMonth; day++) {
+        calendarBody.innerHTML += `<td class="day" data-day="${day}">${day}</td>`;
+    }
 
-        // Highlight today's date
-        const today = new Date();
-        if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === day) {
-            dayDiv.classList.add("today");
+    // Mark the current day
+    const dayCells = document.querySelectorAll(".day");
+    dayCells.forEach(cell => {
+        if (parseInt(cell.dataset.day) === currentDay && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear()) {
+            cell.classList.add("today");
+            currentDayMarker.style.display = "block";
         }
-
-        // Add events
-        dayDiv.addEventListener("click", () => showEvents(dayDiv));
-        calendarElement.appendChild(dayDiv);
-    }
+    });
 }
 
-function showEvents(dayDiv) {
-    const date = dayDiv.dataset.date;
-    const events = JSON.parse(localStorage.getItem(date)) || [];
-    dayDiv.innerHTML += events.map(event => {
-        return `<div class="event" style="background-color: ${event.color};">${event.title}</div>`;
-    }).join("");
+// Function to show the event modal
+function showEventModal(day) {
+    eventModal.style.display = "block";
+    eventDay.textContent = day;
 }
 
-prevMonthButton.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
-});
-
-nextMonthButton.addEventListener("click", () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
-});
-
-addEventButton.addEventListener("click", () => {
-    const title = eventTitleInput.value;
-    const color = eventColorInput.value;
-    const date = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`;
-
-    if (title) {
-        const events = JSON.parse(localStorage.getItem(date)) || [];
-        events.push({ title, color });
-        localStorage.setItem(date, JSON.stringify(events));
-        eventTitleInput.value = ""; // Clear input
-        renderCalendar();
+// Event listeners
+document.addEventListener("click", (event) => {
+    if (event.target.classList.contains("day")) {
+        showEventModal(event.target.dataset.day);
     }
 });
 
-// Initial render
-renderCalendar();
+document.getElementById("prevMonth").onclick = () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    renderCalendar();
+};
+
+document.getElementById("nextMonth").onclick = () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar();
+};
+
+// Add event button
+addEventBtn.onclick = () => {
+    const title = document.getElementById("eventTitle").value;
+    const category = document.getElementById("eventCategory").value;
+    alert(`Event Added: ${title} on ${eventDay.textContent} in ${category}`);
+    eventModal.style.display = "none";
+};
+
+// Create category button
+createCategoryBtn.onclick = () =>
