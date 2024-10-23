@@ -1,98 +1,78 @@
-/* General body styling */
+/* General styling */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
 h1 {
     color: #333;
-    margin-bottom: 20px;
-    font-size: 2.5em;
 }
 
 /* Calendar table styling */
 table {
-    width: 100%;
-    max-width: 600px;
     margin: 0 auto;
     border-collapse: collapse;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
+    width: 80%;
+    max-width: 600px;
+    background-color: #fff;
 }
 
-/* Calendar header (weekdays) */
-th {
-    background-color: #4a90e2;
-    color: white;
-    padding: 15px;
-    text-transform: uppercase;
-    font-size: 1.1em;
-}
-
-/* Calendar days */
-td {
-    padding: 20px;
-    border: 1px solid #e6e6e6;
+th, td {
+    padding: 10px;
+    border: 1px solid #ccc;
     text-align: center;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+th {
+    background-color: #333;
+    color: white;
+}
+
+td {
+    height: 100px;
     position: relative;
 }
 
-/* Hover effect for calendar days */
+/* Hover effect on days */
 td:hover {
-    background-color: #f1f1f1;
+    background-color: #f2f2f2;
+    cursor: pointer;
 }
 
-/* Styling for empty days (not part of the current month) */
-td.empty {
-    background-color: #f4f7f6;
-    cursor: default;
-}
-
-/* Highlight current day */
+/* Highlight today's date */
 .today {
-    background-color: #f26d5b;
+    background-color: #00cc44;
     color: white;
-    font-weight: bold;
-    border-radius: 50%;
 }
 
-/* Event styles */
+/* Event styling */
 .event {
-    padding: 3px;
-    margin-top: 5px;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    padding: 5px;
     border-radius: 5px;
     font-size: 0.9em;
     text-align: left;
     color: white;
 }
 
-/* Event colors */
 .work { background-color: #ff6666; }
 .personal { background-color: #66cc66; }
 .other { background-color: #6666ff; }
 
-/* Modal Styling */
+/* Modal styling */
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
     z-index: 1;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -100,9 +80,7 @@ td.empty {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-    max-width: 400px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 300px;
 }
 
 .close {
@@ -114,7 +92,15 @@ td.empty {
 
 .close:hover,
 .close:focus {
-    color: #000;
+    color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+/* Input fields and buttons inside modal */
+input, select, button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
 }
