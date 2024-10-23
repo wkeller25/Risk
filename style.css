@@ -1,71 +1,99 @@
-/* General styling */
+/* General body styling */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    height: 100vh;
 }
 
-h1 {
+/* Calendar container */
+.calendar-container {
+    width: 90%;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+/* Calendar header */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.calendar-header h1 {
+    font-size: 2em;
     color: #333;
 }
 
-/* Calendar table styling */
-table {
-    margin: 0 auto;
-    border-collapse: collapse;
-    width: 80%;
-    max-width: 600px;
-    background-color: #fff;
-}
-
-th, td {
-    padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-}
-
-th {
-    background-color: #333;
+/* Month navigation buttons */
+button {
+    padding: 8px 15px;
+    background-color: #4a90e2;
     color: white;
-}
-
-td {
-    height: 100px;
-    position: relative;
-}
-
-/* Hover effect on days */
-td:hover {
-    background-color: #f2f2f2;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-/* Highlight today's date */
+button:hover {
+    background-color: #357ab9;
+}
+
+/* Calendar table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background-color: #4a90e2;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+}
+
+td {
+    padding: 20px;
+    border: 1px solid #e6e6e6;
+    text-align: center;
+    vertical-align: top;
+    cursor: pointer;
+    position: relative;
+}
+
+td:hover {
+    background-color: #f0f8ff;
+}
+
+/* Highlight the current day */
 .today {
-    background-color: #00cc44;
-    color: white;
+    background-color: #ffeb3b !important;
+    font-weight: bold;
 }
 
-/* Event styling */
+/* Event styles */
 .event {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    right: 5px;
-    padding: 5px;
-    border-radius: 5px;
+    margin-top: 5px;
+    padding: 3px;
+    border-radius: 4px;
     font-size: 0.9em;
-    text-align: left;
     color: white;
 }
 
+/* Event colors */
 .work { background-color: #ff6666; }
 .personal { background-color: #66cc66; }
 .other { background-color: #6666ff; }
 
-/* Modal styling */
+/* Modal Styling */
 .modal {
-    display: none;
+    display: none; /* Hidden by default */
     position: fixed;
     z-index: 1;
     left: 0;
@@ -79,8 +107,9 @@ td:hover {
     background-color: white;
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 300px;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 10px;
 }
 
 .close {
@@ -93,14 +122,5 @@ td:hover {
 .close:hover,
 .close:focus {
     color: black;
-    text-decoration: none;
     cursor: pointer;
-}
-
-/* Input fields and buttons inside modal */
-input, select, button {
-    margin-top: 10px;
-    width: 100%;
-    padding: 8px;
-    font-size: 14px;
 }
