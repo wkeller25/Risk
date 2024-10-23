@@ -1,27 +1,54 @@
-// JavaScript for handling modal, event addition, and color coding
+// JavaScript to handle adding events to the calendar
 document.addEventListener('DOMContentLoaded', () => {
     const days = document.querySelectorAll('.day');
     const modal = document.getElementById('eventModal');
-    const closeBtn = document.querySelector('.close');
-    const eventDay = document.getElementById('eventDay');
+    const closeModalBtn = document.querySelector('.close');
+    const addEventBtn = document.getElementById('addEventBtn');
     const eventTitleInput = document.getElementById('eventTitle');
     const eventTypeInput = document.getElementById('eventType');
-    const addEventBtn = document.getElementById('addEventBtn');
     let selectedDay;
 
-    // Function to open the modal
-    function openModal(day) {
-        selectedDay = day;
-        eventDay.innerText = `October ${day.dataset.day}, 2024`;
-        modal.style.display = 'block';
-    }
+    // Open the modal when a day is clicked
+    days.forEach(day => {
+        day.addEventListener('click', () => {
+            selectedDay = day;
+            modal.style.display = 'block';
+        });
+    });
 
-    // Function to close the modal
+    // Close the modal when 'x' is clicked
+    closeModalBtn.onclick = () => {
+        closeModal();
+    };
+
+    // Close the modal when clicking outside the modal content
+    window.onclick = (event) => {
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
+
+    // Add the event to the selected day
+    addEventBtn.addEventListener('click', () => {
+        const eventTitle = eventTitleInput.value.trim();
+        const eventType = eventTypeInput.value;
+
+        if (eventTitle) {
+            const event = document.createElement('div');
+            event.classList.add('event', eventType);
+            event.innerText = eventTitle;
+            selectedDay.appendChild(event);
+            
+            closeModal();
+        } else {
+            alert('Please enter an event title.');
+        }
+    });
+
+    // Function to close the modal and reset inputs
     function closeModal() {
         modal.style.display = 'none';
         eventTitleInput.value = '';
         eventTypeInput.value = 'work';
     }
-
-    // Function to add the event to the selected day
-    function addEvent
+});
