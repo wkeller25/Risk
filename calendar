@@ -1,54 +1,89 @@
-// JavaScript to handle adding events to the calendar
 document.addEventListener('DOMContentLoaded', () => {
-    const days = document.querySelectorAll('.day');
-    const modal = document.getElementById('eventModal');
-    const closeModalBtn = document.querySelector('.close');
+    const daysInWeek = 7;
+    const eventModal = document.getElementById('eventModal');
+    const closeBtn = document.querySelector('.close');
     const addEventBtn = document.getElementById('addEventBtn');
+    const eventDayText = document.getElementById('eventDay');
     const eventTitleInput = document.getElementById('eventTitle');
     const eventTypeInput = document.getElementById('eventType');
-    let selectedDay;
+    const calendarBody = document.getElementById('calendarBody');
+    let currentDate = new Date();
+    let selectedDate;
+    let events = {};
 
-    // Open the modal when a day is clicked
-    days.forEach(day => {
-        day.addEventListener('click', () => {
-            selectedDay = day;
-            modal.style.display = 'block';
-        });
-    });
-
-    // Close the modal when 'x' is clicked
-    closeModalBtn.onclick = () => {
-        closeModal();
-    };
-
-    // Close the modal when clicking outside the modal content
-    window.onclick = (event) => {
-        if (event.target === modal) {
-            closeModal();
-        }
-    };
-
-    // Add the event to the selected day
-    addEventBtn.addEventListener('click', () => {
-        const eventTitle = eventTitleInput.value.trim();
-        const eventType = eventTypeInput.value;
-
-        if (eventTitle) {
-            const event = document.createElement('div');
-            event.classList.add('event', eventType);
-            event.innerText = eventTitle;
-            selectedDay.appendChild(event);
-            
-            closeModal();
-        } else {
-            alert('Please enter an event title.');
-        }
-    });
-
-    // Function to close the modal and reset inputs
-    function closeModal() {
-        modal.style.display = 'none';
+    // Close Modal function
+    const closeModal = () => {
+        eventModal.style.display = 'none';
         eventTitleInput.value = '';
-        eventTypeInput.value = 'work';
-    }
-});
+    };
+
+    closeBtn.onclick = closeModal;
+
+    // Add Event Functionality
+    const addEvent = () => {
+        const eventTitle = eventTitleInput.value;
+        const eventType = eventTypeInput.value;
+        if (eventTitle && selectedDate) {
+            const eventElement = document.createElement('div');
+            eventElement.className = `event ${eventType}`;
+            eventElement.innerText = eventTitle;
+
+            const dayCell = document.querySelector(`[data-date="${selectedDate}"]`);
+            dayCell.appendChild(eventElement);
+
+            // Store events for future reference
+            if (!events[selectedDate]) events[selectedDate] = [];
+            events[selectedDate].push({ title: eventTitle, type: eventType });
+
+            closeModal();
+        }
+    };
+
+    addEventBtn.onclick = addEvent;
+
+    // Populate calendar for the selected month
+    const populateCalendar = (date) => {
+        calendarBody.innerHTML = '';
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+
+        document.getElementById('monthYear').innerText = date.toLocaleDateString('en-us', { month: 'long', year: 'numeric' });
+
+        let dayCellIndex = 0;
+        let currentRow = document.createElement('tr');
+
+        // Add empty cells until the first day of the month
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            const emptyCell = document.createElement('td');
+            currentRow.appendChild(emptyCell);
+            dayCellIndex++;
+        }
+
+        // Populate the days of the month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dayCell = document.createElement('td');
+            const dayDate = new Date(year, month, day);
+            dayCell.innerText = day;
+            dayCell.setAttribute('data-date', dayDate.toISOString().split('T')[0]);
+
+            // Highlight the current day
+            if (dayDate.toDateString() === today.toDateString()) {
+                dayCell.classList.add('today');
+            }
+
+            // Add click event to open the modal
+            dayCell.onclick = () => {
+                selectedDate = dayDate.toISOString().split('T')[0];
+                eventDayText.innerText = dayDate.toDateString();
+                eventModal.style.display = 'block';
+            };
+
+            // Load events for the day
+            if (events[selectedDate]) {
+                events[selectedDate].forEach(event => {
+                    const eventElement = document.createElement('div');
+                    eventElement.className = `event ${event.type}`;
+                    eventElement
